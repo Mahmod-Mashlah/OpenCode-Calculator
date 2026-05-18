@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funky Calculator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        .calculator {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(16px);
+            border-radius: 32px;
+            padding: 28px 24px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.06);
+            max-width: 380px;
+            width: 100%;
+        }
+
+        .display {
+            background: rgba(0,0,0,0.45);
+            border-radius: 20px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            text-align: right;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: end;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .display .expression {
+            color: rgba(255,255,255,0.5);
+            font-size: 1rem;
+            min-height: 1.5em;
+            word-break: break-all;
+            transition: color 0.3s;
+        }
+
+        .display .result {
+            color: #fff;
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+            word-break: break-all;
+            text-shadow: 0 0 20px rgba(255,255,255,0.1);
+        }
+
+        .btn-calc {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border: none;
+            border-radius: 18px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s, filter 0.2s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+
+        .btn-calc::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+            pointer-events: none;
+            border-radius: inherit;
+        }
+
+        .btn-calc:active {
+            transform: scale(0.85);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+        }
+
+        .btn-calc:active::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: inherit;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            animation: ripple 0.4s ease-out;
+        }
+
+        @keyframes ripple {
+            from { opacity: 1; transform: scale(0.5); }
+            to { opacity: 0; transform: scale(2); }
+        }
+
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg); }
+            20% { transform: rotate(-4deg) scale(1.05); }
+            40% { transform: rotate(4deg) scale(1.05); }
+            60% { transform: rotate(-2deg) scale(1.02); }
+            80% { transform: rotate(2deg) scale(1.02); }
+        }
+
+        @keyframes pop {
+            0% { transform: scale(1); }
+            40% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        .btn-calc:hover {
+            filter: brightness(1.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        }
+
+        .btn-calc.wiggle { animation: wiggle 0.4s ease; }
+        .btn-calc.pop { animation: pop 0.35s ease; }
+        .btn-calc.float { animation: float 2s ease-in-out infinite; }
+
+        .btn-calc.number {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+        .btn-calc.operator {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+        }
+        .btn-calc.equals {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            box-shadow: 0 4px 20px rgba(79,172,254,0.4);
+        }
+        .btn-calc.clear {
+            background: linear-gradient(135deg, #fa709a, #fee140);
+            color: #222;
+        }
+        .btn-calc.delete {
+            background: linear-gradient(135deg, #fa709a, #fee140);
+            color: #222;
+        }
+        .btn-calc.special {
+            background: linear-gradient(135deg, #a18cd1, #fbc2eb);
+        }
+        .btn-calc.percent {
+            background: linear-gradient(135deg, #a18cd1, #fbc2eb);
+        }
+        .btn-calc.decimal {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .row { margin-bottom: 10px; }
+        .row:last-child { margin-bottom: 0; }
+
+        .btn-calc.span-two {
+            aspect-ratio: auto;
+            border-radius: 18px;
+        }
+
+        .footer-text {
+            text-align: center;
+            color: rgba(255,255,255,0.25);
+            font-size: 0.75rem;
+            margin-top: 18px;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 420px) {
+            .calculator { padding: 20px 16px; border-radius: 24px; }
+            .display .result { font-size: 2rem; }
+            .btn-calc { font-size: 1.25rem; border-radius: 14px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="calculator" id="app">
+    <div class="display">
+        <div class="expression" id="expression"></div>
+        <div class="result" id="result">0</div>
+    </div>
+
+    <div class="row g-2">
+        <div class="col-3"><button class="btn-calc clear" data-val="C">C</button></div>
+        <div class="col-3"><button class="btn-calc delete" data-val="DEL">DEL</button></div>
+        <div class="col-3"><button class="btn-calc percent" data-val="%">%</button></div>
+        <div class="col-3"><button class="btn-calc operator" data-val="/">&divide;</button></div>
+    </div>
+    <div class="row g-2">
+        <div class="col-3"><button class="btn-calc number" data-val="7">7</button></div>
+        <div class="col-3"><button class="btn-calc number" data-val="8">8</button></div>
+        <div class="col-3"><button class="btn-calc number" data-val="9">9</button></div>
+        <div class="col-3"><button class="btn-calc operator" data-val="*">&times;</button></div>
+    </div>
+    <div class="row g-2">
+        <div class="col-3"><button class="btn-calc number" data-val="4">4</button></div>
+        <div class="col-3"><button class="btn-calc number" data-val="5">5</button></div>
+        <div class="col-3"><button class="btn-calc number" data-val="6">6</button></div>
+        <div class="col-3"><button class="btn-calc operator" data-val="-">&minus;</button></div>
+    </div>
+    <div class="row g-2">
+        <div class="col-3"><button class="btn-calc number" data-val="1">1</button></div>
+        <div class="col-3"><button class="btn-calc number" data-val="2">2</button></div>
+        <div class="col-3"><button class="btn-calc number" data-val="3">3</button></div>
+        <div class="col-3"><button class="btn-calc operator" data-val="+">+</button></div>
+    </div>
+    <div class="row g-2">
+        <div class="col-6"><button class="btn-calc number span-two" data-val="0">0</button></div>
+        <div class="col-3"><button class="btn-calc decimal" data-val=".">.</button></div>
+        <div class="col-3"><button class="btn-calc equals" data-val="=">=</button></div>
+    </div>
+
+    <div class="footer-text">&#9835; FUNKY CALCULATOR &#9835;</div>
+</div>
+
+<script>
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let audioCtx;
+
+    function getAudioCtx() {
+        if (!audioCtx) audioCtx = new AudioCtx();
+        return audioCtx;
+    }
+
+    function playSound(type) {
+        try {
+            const ctx = getAudioCtx();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            gain.gain.value = 0.08;
+
+            switch (type) {
+                case 'number':
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(600 + Math.random() * 400, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + 0.06);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+                    osc.start(ctx.currentTime);
+                    osc.stop(ctx.currentTime + 0.08);
+                    break;
+                case 'operator':
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(300, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.1);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+                    osc.start(ctx.currentTime);
+                    osc.stop(ctx.currentTime + 0.12);
+                    break;
+                case 'equals':
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(400, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.15);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+                    osc.start(ctx.currentTime);
+                    osc.stop(ctx.currentTime + 0.2);
+                    setTimeout(() => {
+                        const o2 = ctx.createOscillator();
+                        const g2 = ctx.createGain();
+                        o2.connect(g2);
+                        g2.connect(ctx.destination);
+                        o2.type = 'sine';
+                        o2.frequency.setValueAtTime(800, ctx.currentTime);
+                        o2.frequency.exponentialRampToValueAtTime(1400, ctx.currentTime + 0.12);
+                        g2.gain.value = 0.06;
+                        g2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+                        o2.start(ctx.currentTime);
+                        o2.stop(ctx.currentTime + 0.15);
+                    }, 100);
+                    break;
+                case 'clear':
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(500, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.15);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
+                    osc.start(ctx.currentTime);
+                    osc.stop(ctx.currentTime + 0.18);
+                    break;
+                case 'delete':
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(800, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.08);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+                    osc.start(ctx.currentTime);
+                    osc.stop(ctx.currentTime + 0.1);
+                    break;
+                default:
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(500, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.05);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.06);
+                    osc.start(ctx.currentTime);
+                    osc.stop(ctx.currentTime + 0.06);
+            }
+        } catch (e) {}
+    }
+
+    const expressionEl = document.getElementById('expression');
+    const resultEl = document.getElementById('result');
+    const buttons = document.querySelectorAll('.btn-calc');
+
+    let currentInput = '';
+    let expression = '';
+    let result = '0';
+    let justEvaluated = false;
+
+    function updateDisplay() {
+        resultEl.textContent = result || '0';
+        expressionEl.textContent = expression;
+    }
+
+    function evaluate(expr) {
+        try {
+            const sanitized = expr.replace(/&divide;/g, '/').replace(/&times;/g, '*').replace(/\u00f7/g, '/').replace(/\u00d7/g, '*');
+            const res = Function('"use strict"; return (' + sanitized + ')')();
+            return Number.isFinite(res) ? String(res) : 'Error';
+        } catch {
+            return 'Error';
+        }
+    }
+
+    buttons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const val = this.dataset.val;
+            const cls = this.className;
+
+            // animation
+            this.classList.remove('wiggle', 'pop');
+            void this.offsetWidth;
+            if (val === '=') {
+                this.classList.add('pop');
+                playSound('equals');
+            } else if (val === 'C') {
+                this.classList.add('wiggle');
+                playSound('clear');
+            } else if (val === 'DEL') {
+                this.classList.add('wiggle');
+                playSound('delete');
+            } else if (cls.includes('operator')) {
+                this.classList.add('pop');
+                playSound('operator');
+            } else {
+                this.classList.add('pop');
+                playSound('number');
+            }
+
+            if (val === 'C') {
+                currentInput = '';
+                expression = '';
+                result = '0';
+                justEvaluated = false;
+                updateDisplay();
+                return;
+            }
+
+            if (val === 'DEL') {
+                if (justEvaluated) return;
+                if (currentInput.length > 0) {
+                    currentInput = currentInput.slice(0, -1);
+                    expression = expression.slice(0, -1);
+                }
+                result = currentInput || '0';
+                updateDisplay();
+                return;
+            }
+
+            if (val === '=') {
+                if (expression) {
+                    const ans = evaluate(expression);
+                    result = ans;
+                    expression = expression + ' =';
+                    justEvaluated = true;
+                    updateDisplay();
+                }
+                return;
+            }
+
+            if (justEvaluated) {
+                if (/^[0-9.]$/.test(val)) {
+                    currentInput = val;
+                    expression = val;
+                    result = val;
+                } else if (['+', '-', '*', '/', '%'].includes(val)) {
+                    const lastResult = result;
+                    currentInput = val;
+                    expression = lastResult + ' ' + val;
+                    result = lastResult + ' ' + val;
+                }
+                justEvaluated = false;
+                updateDisplay();
+                return;
+            }
+
+            if (['+', '-', '*', '/', '%'].includes(val)) {
+                if (currentInput === '' && expression === '') return;
+                const lastChar = expression.slice(-1);
+                if (['+', '-', '*', '/', '%'].includes(lastChar)) {
+                    expression = expression.slice(0, -1) + val;
+                } else {
+                    expression += ' ' + val;
+                }
+                currentInput = '';
+                result = expression;
+                updateDisplay();
+                return;
+            }
+
+            if (val === '.') {
+                if (currentInput.includes('.')) return;
+                if (currentInput === '') {
+                    currentInput = '0.';
+                    expression += '0.';
+                } else {
+                    currentInput += '.';
+                    expression += '.';
+                }
+                result = expression;
+                updateDisplay();
+                return;
+            }
+
+            currentInput += val;
+            expression += val;
+            result = expression;
+            updateDisplay();
+        });
+    });
+
+    document.addEventListener('keydown', e => {
+        const keyMap = {
+            '0': '0', '1': '1', '2': '2', '3': '3', '4': '4',
+            '5': '5', '6': '6', '7': '7', '8': '8', '9': '9',
+            '.': '.', '+': '+', '-': '-', '*': '*', '/': '/',
+            '%': '%', 'Enter': '=', '=': '=', 'Backspace': 'DEL',
+            'Escape': 'C', 'Delete': 'C'
+        };
+        const mapped = keyMap[e.key];
+        if (mapped) {
+            e.preventDefault();
+            const btn = document.querySelector(`.btn-calc[data-val="${mapped}"]`);
+            if (btn) btn.click();
+        }
+    });
+
+    updateDisplay();
+</script>
+
+</body>
+</html>
