@@ -7,6 +7,70 @@
     <title>Funky OpenCode Calculator 0_0</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            --surface: rgba(255, 255, 255, 0.08);
+            --surface-hover: rgba(255, 255, 255, 0.12);
+            --text-primary: #fff;
+            --text-secondary: rgba(255, 255, 255, 0.5);
+            --text-muted: rgba(255, 255, 255, 0.35);
+            --border-color: rgba(255, 255, 255, 0.06);
+            --border-light: rgba(255, 255, 255, 0.1);
+            --display-bg: rgba(0, 0, 0, 0.45);
+            --select-bg: rgba(0, 0, 0, 0.4);
+            --select-option-bg: #24243e;
+            --btn-number: linear-gradient(135deg, #667eea, #764ba2);
+            --btn-operator: linear-gradient(135deg, #f093fb, #f5576c);
+            --btn-equals: linear-gradient(135deg, #4facfe, #00f2fe);
+            --btn-clear: linear-gradient(135deg, #fa709a, #fee140);
+            --btn-special: linear-gradient(135deg, #a18cd1, #fbc2eb);
+            --accent-purple: linear-gradient(135deg, #667eea, #764ba2);
+            --accent-pink: linear-gradient(135deg, #f093fb, #f5576c);
+            --accent-blue: linear-gradient(135deg, #4facfe, #00f2fe);
+            --tab-bg: rgba(0, 0, 0, 0.3);
+            --subtab-bg: rgba(0, 0, 0, 0.25);
+            --result-hijri: #fbc2eb;
+            --result-gregorian: #4facfe;
+            --shadow: rgba(0, 0, 0, 0.5);
+            --btn-text: #fff;
+            --btn-text-dark: #222;
+            --toggle-bg: rgba(255, 255, 255, 0.1);
+            --toggle-hover: rgba(255, 255, 255, 0.2);
+            --row-label-color: rgba(255, 255, 255, 0.5);
+        }
+
+        [data-theme="light"] {
+            --bg-gradient: linear-gradient(135deg, #e8eaf6, #c5cae9, #e8eaf6);
+            --surface: rgba(255, 255, 255, 0.7);
+            --surface-hover: rgba(255, 255, 255, 0.85);
+            --text-primary: #1a1a2e;
+            --text-secondary: rgba(26, 26, 46, 0.5);
+            --text-muted: rgba(26, 26, 46, 0.35);
+            --border-color: rgba(26, 26, 46, 0.08);
+            --border-light: rgba(26, 26, 46, 0.12);
+            --display-bg: rgba(255, 255, 255, 0.6);
+            --select-bg: rgba(255, 255, 255, 0.6);
+            --select-option-bg: #e8eaf6;
+            --btn-number: linear-gradient(135deg, #5c6bc0, #7c4dff);
+            --btn-operator: linear-gradient(135deg, #ec407a, #d81b60);
+            --btn-equals: linear-gradient(135deg, #42a5f5, #00bcd4);
+            --btn-clear: linear-gradient(135deg, #ef5350, #ffb300);
+            --btn-special: linear-gradient(135deg, #7e57c2, #f48fb1);
+            --accent-purple: linear-gradient(135deg, #5c6bc0, #7c4dff);
+            --accent-pink: linear-gradient(135deg, #ec407a, #d81b60);
+            --accent-blue: linear-gradient(135deg, #42a5f5, #00bcd4);
+            --tab-bg: rgba(255, 255, 255, 0.5);
+            --subtab-bg: rgba(255, 255, 255, 0.4);
+            --result-hijri: #7c4dff;
+            --result-gregorian: #1976d2;
+            --shadow: rgba(0, 0, 0, 0.15);
+            --btn-text: #fff;
+            --btn-text-dark: #fff;
+            --toggle-bg: rgba(0, 0, 0, 0.08);
+            --toggle-hover: rgba(0, 0, 0, 0.15);
+            --row-label-color: rgba(26, 26, 46, 0.55);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -16,35 +80,69 @@
         body {
             min-height: 100vh;
             min-height: 100dvh;
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg-gradient);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             overflow-x: hidden;
             padding: 16px;
+            transition: background 0.4s ease;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 1000;
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            backdrop-filter: blur(12px);
+            color: var(--text-primary);
+            font-size: 1.3rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px var(--shadow);
+        }
+
+        .theme-toggle:hover {
+            background: var(--toggle-hover);
+            transform: scale(1.1);
         }
 
         .calculator {
             max-width: 480px;
             width: 100%;
             margin: 0 auto;
+            background: var(--surface);
+            backdrop-filter: blur(20px);
+            border-radius: 28px;
+            padding: 24px 22px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 25px 60px var(--shadow), inset 0 1px 0 var(--border-light);
+            transition: background 0.4s ease, box-shadow 0.4s ease;
         }
 
         .mode-tabs {
             display: flex;
             gap: 8px;
             margin-bottom: 20px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 16px;
+            background: var(--tab-bg);
+            border-radius: 14px;
             padding: 4px;
         }
 
         .mode-tab {
             flex: 1;
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             padding: 10px;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             font-weight: 700;
-            color: rgba(255, 255, 255, 0.5);
+            color: var(--text-secondary);
             background: transparent;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -52,373 +150,61 @@
         }
 
         .mode-tab.active {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: var(--accent-purple);
             color: #fff;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 4px 15px var(--shadow);
         }
 
         .mode-tab:hover:not(.active) {
-            color: rgba(255, 255, 255, 0.8);
+            color: var(--text-primary);
         }
 
-        .panel {
-            display: none;
-        }
-
-        .panel.active {
-            display: block;
-        }
-
-        .converter-display {
-            background: rgba(0, 0, 0, 0.45);
-            border-radius: 20px;
-            padding: 20px 24px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .converter-display .conv-label {
-            color: rgba(255, 255, 255, 0.4);
-            font-size: 0.75rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 4px;
-        }
-
-        .converter-display .conv-input {
-            width: 100%;
-            background: transparent;
-            border: none;
-            color: #fff;
-            font-size: 2rem;
-            font-weight: 700;
-            outline: none;
-            text-align: right;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
-        }
-
-        .converter-display .conv-input::placeholder {
-            color: rgba(255, 255, 255, 0.2);
-        }
-
-        .converter-display .conv-result {
-            color: #4facfe;
-            font-size: 1.8rem;
-            font-weight: 700;
-            text-align: right;
-            min-height: 2.2rem;
-            text-shadow: 0 0 20px rgba(79, 172, 254, 0.2);
-        }
-
-        .conv-select-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 16px;
-            align-items: center;
-        }
-
-        .conv-select-wrap {
-            flex: 1;
-            position: relative;
-        }
-
-        .conv-select {
-            width: 100%;
-            padding: 12px 14px;
-            border-radius: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(0, 0, 0, 0.4);
-            color: #fff;
-            font-size: 0.85rem;
-            font-weight: 600;
-            outline: none;
-            cursor: pointer;
-            appearance: none;
-            transition: border-color 0.2s;
-        }
-
-        .conv-select:focus {
-            border-color: #667eea;
-        }
-
-        .conv-select option {
-            background: #24243e;
-            color: #fff;
-        }
-
-        .conv-select-wrap::after {
-            content: '\25BC';
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: rgba(255, 255, 255, 0.4);
-            font-size: 0.7rem;
-            pointer-events: none;
-        }
-
-        .conv-swap {
-            width: 40px;
-            height: 40px;
-            border: none;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #f093fb, #f5576c);
-            color: #fff;
-            font-size: 1.1rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            flex-shrink: 0;
-        }
-
-        .conv-swap:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 18px rgba(245, 87, 108, 0.4);
-        }
-
-        .conv-swap:active {
-            transform: scale(0.9);
-        }
-
-        .conv-numpad {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-        }
-
-        .conv-numpad .btn-calc.span-two {
-            aspect-ratio: auto;
-        }
-
-        .conv-category {
-            margin-bottom: 12px;
-        }
-
-        .conv-category-label {
-            color: rgba(255, 255, 255, 0.35);
-            font-size: 0.7rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 6px;
-        }
-
-        .conv-category-btns {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-
-        .conv-cat-btn {
-            flex: 1;
-            min-width: 60px;
-            padding: 8px 6px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            background: rgba(0, 0, 0, 0.3);
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 0.75rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: center;
-        }
-
-        .conv-cat-btn.active {
-            background: linear-gradient(135deg, #a18cd1, #fbc2eb);
-            color: #222;
-            border-color: transparent;
-            box-shadow: 0 4px 12px rgba(161, 140, 209, 0.3);
-        }
-
-        .conv-cat-btn:hover:not(.active) {
-            color: rgba(255, 255, 255, 0.8);
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-
-        .conv-subtabs {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 12px;
-            background: rgba(0, 0, 0, 0.25);
-            border-radius: 12px;
-            padding: 3px;
-        }
-
-        .conv-subtab {
-            flex: 1;
-            border: none;
-            border-radius: 9px;
-            padding: 7px 10px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: rgba(255, 255, 255, 0.4);
-            background: transparent;
-            cursor: pointer;
-            transition: all 0.2s;
-            letter-spacing: 0.5px;
-        }
-
-        .conv-subtab.active {
-            background: linear-gradient(135deg, #4facfe, #00f2fe);
-            color: #fff;
-            box-shadow: 0 4px 12px rgba(79, 172, 254, 0.25);
-        }
-
-        .conv-subtab:hover:not(.active) {
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        .conv-date-section {
-            display: none;
-        }
-
-        .conv-date-section.active {
-            display: block;
-        }
-
-        .date-row {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .date-row .date-label {
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 0.7rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            min-width: 36px;
-        }
-
-        .date-row .date-input {
-            flex: 1;
-            padding: 10px 12px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(0, 0, 0, 0.4);
-            color: #fff;
-            font-size: 0.85rem;
-            outline: none;
-            transition: border-color 0.2s;
-            cursor: text;
-        }
-
-        .date-row .date-input:focus {
-            border-color: #4facfe;
-        }
-
-        .date-row .date-input::-webkit-calendar-picker-indicator {
-            filter: invert(0.7);
-            cursor: pointer;
-        }
-
-        .date-swap-btn {
-            width: 36px;
-            height: 36px;
-            border: none;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #4facfe, #00f2fe);
-            color: #fff;
-            font-size: 1rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            flex-shrink: 0;
-        }
-
-        .date-swap-btn:hover {
-            transform: scale(1.1);
-        }
-
-        .date-swap-btn:active {
-            transform: scale(0.9);
-        }
-
-        .date-result-box {
-            background: rgba(0, 0, 0, 0.35);
-            border-radius: 14px;
-            padding: 14px 18px;
-            margin-top: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            text-align: center;
-        }
-
-        .date-result-box .date-result-label {
-            color: rgba(255, 255, 255, 0.35);
-            font-size: 0.65rem;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-        }
-
-        .date-result-box .date-result-value {
-            color: #fff;
-            font-size: 1.4rem;
-            font-weight: 700;
-            margin-top: 4px;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-        }
-
-        .date-result-box .date-result-value.hijri {
-            color: #fbc2eb;
-            text-shadow: 0 0 15px rgba(251, 194, 235, 0.2);
-        }
-
-        .date-result-box .date-result-value.gregorian {
-            color: #4facfe;
-            text-shadow: 0 0 15px rgba(79, 172, 254, 0.2);
-        }
+        .panel { display: none; }
+        .panel.active { display: block; }
 
         .display {
-            background: rgba(0, 0, 0, 0.45);
-            border-radius: 20px;
-            padding: 20px 24px;
-            margin-bottom: 24px;
+            background: var(--display-bg);
+            border-radius: 18px;
+            padding: 20px 22px;
+            margin-bottom: 20px;
             text-align: right;
-            min-height: 100px;
+            min-height: 96px;
             display: flex;
             flex-direction: column;
             justify-content: end;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            transition: background 0.4s ease;
         }
 
         .display .expression {
-            color: rgba(255, 255, 255, 0.5);
+            color: var(--text-secondary);
             font-size: 1rem;
             min-height: 1.5em;
             word-break: break-all;
-            transition: color 0.3s;
         }
 
         .display .result {
-            color: #fff;
-            font-size: 2.5rem;
+            color: var(--text-primary);
+            font-size: 2.3rem;
             font-weight: 700;
             line-height: 1.2;
             word-break: break-all;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+            text-shadow: 0 0 20px var(--shadow);
         }
 
         .btn-calc {
             width: 100%;
             aspect-ratio: 1 / 1;
             border: none;
-            border-radius: 18px;
-            font-size: 1.5rem;
+            border-radius: 16px;
+            font-size: 1.4rem;
             font-weight: 700;
-            color: #fff;
+            color: var(--btn-text);
             transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s, filter 0.2s;
             cursor: pointer;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 12px var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.15);
         }
 
         .btn-calc::before {
@@ -432,7 +218,7 @@
 
         .btn-calc:active {
             transform: scale(0.85);
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 2px 6px var(--shadow);
         }
 
         .btn-calc:active::after {
@@ -445,128 +231,47 @@
         }
 
         @keyframes ripple {
-            from {
-                opacity: 1;
-                transform: scale(0.5);
-            }
-
-            to {
-                opacity: 0;
-                transform: scale(2);
-            }
+            from { opacity: 1; transform: scale(0.5); }
+            to { opacity: 0; transform: scale(2); }
         }
 
         @keyframes wiggle {
-
-            0%,
-            100% {
-                transform: rotate(0deg);
-            }
-
-            20% {
-                transform: rotate(-4deg) scale(1.05);
-            }
-
-            40% {
-                transform: rotate(4deg) scale(1.05);
-            }
-
-            60% {
-                transform: rotate(-2deg) scale(1.02);
-            }
-
-            80% {
-                transform: rotate(2deg) scale(1.02);
-            }
+            0%, 100% { transform: rotate(0deg); }
+            20% { transform: rotate(-4deg) scale(1.05); }
+            40% { transform: rotate(4deg) scale(1.05); }
+            60% { transform: rotate(-2deg) scale(1.02); }
+            80% { transform: rotate(2deg) scale(1.02); }
         }
 
         @keyframes pop {
-            0% {
-                transform: scale(1);
-            }
-
-            40% {
-                transform: scale(1.2);
-            }
-
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-3px);
-            }
+            0% { transform: scale(1); }
+            40% { transform: scale(1.2); }
+            100% { transform: scale(1); }
         }
 
         .btn-calc:hover {
-            filter: brightness(1.2);
+            filter: brightness(1.15);
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
         }
 
-        .btn-calc.wiggle {
-            animation: wiggle 0.4s ease;
-        }
+        .btn-calc.wiggle { animation: wiggle 0.4s ease; }
+        .btn-calc.pop { animation: pop 0.35s ease; }
 
-        .btn-calc.pop {
-            animation: pop 0.35s ease;
-        }
-
-        .btn-calc.float {
-            animation: float 2s ease-in-out infinite;
-        }
-
-        .btn-calc.number {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-        }
-
-        .btn-calc.operator {
-            background: linear-gradient(135deg, #f093fb, #f5576c);
-        }
-
-        .btn-calc.equals {
-            background: linear-gradient(135deg, #4facfe, #00f2fe);
-            box-shadow: 0 4px 20px rgba(79, 172, 254, 0.4);
-        }
-
-        .btn-calc.clear {
-            background: linear-gradient(135deg, #fa709a, #fee140);
-            color: #222;
-        }
-
-        .btn-calc.delete {
-            background: linear-gradient(135deg, #fa709a, #fee140);
-            color: #222;
-        }
-
-        .btn-calc.special {
-            background: linear-gradient(135deg, #a18cd1, #fbc2eb);
-        }
-
-        .btn-calc.percent {
-            background: linear-gradient(135deg, #a18cd1, #fbc2eb);
-        }
-
-        .btn-calc.decimal {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-        }
+        .btn-calc.number { background: var(--btn-number); }
+        .btn-calc.operator { background: var(--btn-operator); }
+        .btn-calc.equals { background: var(--btn-equals); }
+        .btn-calc.clear { background: var(--btn-clear); color: var(--btn-text-dark); }
+        .btn-calc.delete { background: var(--btn-clear); color: var(--btn-text-dark); }
+        .btn-calc.special { background: var(--btn-special); }
+        .btn-calc.percent { background: var(--btn-special); }
+        .btn-calc.decimal { background: var(--btn-number); }
 
         .row {
             margin-bottom: 10px;
         }
-
         .row:last-child {
             margin-bottom: 0;
         }
-
         .row.g-2 {
             --bs-gutter-x: 0.5rem;
             margin-left: 0;
@@ -575,133 +280,349 @@
 
         .btn-calc.span-two {
             aspect-ratio: auto;
-            border-radius: 18px;
+            border-radius: 16px;
         }
 
         .footer-text {
             text-align: center;
-            color: rgba(255, 255, 255, 0.25);
-            font-size: 0.75rem;
-            margin-top: 18px;
+            color: var(--text-muted);
+            font-size: 0.72rem;
+            margin-top: 16px;
             letter-spacing: 1px;
         }
 
+        /* CONVERTER */
+        .converter-display {
+            background: var(--display-bg);
+            border-radius: 18px;
+            padding: 18px 22px;
+            margin-bottom: 18px;
+            border: 1px solid var(--border-color);
+            transition: background 0.4s ease;
+        }
+
+        .converter-display .conv-label {
+            color: var(--text-secondary);
+            font-size: 0.72rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .converter-display .conv-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.9rem;
+            font-weight: 700;
+            outline: none;
+            text-align: right;
+        }
+
+        .converter-display .conv-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .converter-display .conv-result {
+            color: var(--result-gregorian);
+            font-size: 1.7rem;
+            font-weight: 700;
+            text-align: right;
+            min-height: 2.2rem;
+            transition: color 0.4s ease;
+        }
+
+        .conv-select-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 14px;
+            align-items: center;
+        }
+
+        .conv-select-wrap {
+            flex: 1;
+            position: relative;
+        }
+
+        .conv-select {
+            width: 100%;
+            padding: 11px 14px;
+            border-radius: 12px;
+            border: 1px solid var(--border-light);
+            background: var(--select-bg);
+            color: var(--text-primary);
+            font-size: 0.82rem;
+            font-weight: 600;
+            outline: none;
+            cursor: pointer;
+            appearance: none;
+            transition: border-color 0.2s, background 0.4s ease;
+        }
+
+        .conv-select:focus {
+            border-color: #667eea;
+        }
+
+        .conv-select option {
+            background: var(--select-option-bg);
+            color: var(--text-primary);
+        }
+
+        .conv-select-wrap::after {
+            content: '\25BC';
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            pointer-events: none;
+        }
+
+        .conv-swap {
+            width: 38px;
+            height: 38px;
+            border: none;
+            border-radius: 50%;
+            background: var(--accent-pink);
+            color: #fff;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 12px var(--shadow);
+            flex-shrink: 0;
+        }
+
+        .conv-swap:hover { transform: scale(1.1); }
+        .conv-swap:active { transform: scale(0.9); }
+
+        .conv-numpad {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .conv-numpad .btn-calc.span-two { aspect-ratio: auto; }
+
+        .conv-category { margin-bottom: 10px; }
+
+        .conv-category-label {
+            color: var(--text-muted);
+            font-size: 0.68rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .conv-category-btns {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .conv-cat-btn {
+            flex: 1;
+            min-width: 56px;
+            padding: 7px 5px;
+            border: 1px solid var(--border-light);
+            border-radius: 9px;
+            background: var(--select-bg);
+            color: var(--text-secondary);
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s, background 0.4s ease;
+            text-align: center;
+        }
+
+        .conv-cat-btn.active {
+            background: var(--btn-special);
+            color: var(--btn-text-dark);
+            border-color: transparent;
+        }
+
+        .conv-cat-btn:hover:not(.active) {
+            color: var(--text-primary);
+            border-color: var(--text-secondary);
+        }
+
+        .conv-subtabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 12px;
+            background: var(--subtab-bg);
+            border-radius: 10px;
+            padding: 3px;
+        }
+
+        .conv-subtab {
+            flex: 1;
+            border: none;
+            border-radius: 8px;
+            padding: 7px 10px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 0.5px;
+        }
+
+        .conv-subtab.active {
+            background: var(--accent-blue);
+            color: #fff;
+        }
+
+        .conv-subtab:hover:not(.active) {
+            color: var(--text-primary);
+        }
+
+        .conv-date-section { display: none; }
+        .conv-date-section.active { display: block; }
+
+        .date-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .date-row .date-label {
+            color: var(--row-label-color);
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            min-width: 34px;
+        }
+
+        .date-row .date-input {
+            flex: 1;
+            padding: 10px 12px;
+            border-radius: 11px;
+            border: 1px solid var(--border-light);
+            background: var(--select-bg);
+            color: var(--text-primary);
+            font-size: 0.82rem;
+            outline: none;
+            transition: border-color 0.2s, background 0.4s ease;
+        }
+
+        .date-row .date-input:focus {
+            border-color: var(--result-gregorian);
+        }
+
+        .date-row .date-input::-webkit-calendar-picker-indicator {
+            filter: invert(0.7);
+            cursor: pointer;
+        }
+
+        .date-row .date-input option {
+            background: var(--select-option-bg);
+        }
+
+        .date-swap-btn {
+            width: 34px;
+            height: 34px;
+            border: none;
+            border-radius: 50%;
+            background: var(--accent-blue);
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+            box-shadow: 0 4px 12px var(--shadow);
+            flex-shrink: 0;
+        }
+
+        .date-swap-btn:hover { transform: scale(1.1); }
+        .date-swap-btn:active { transform: scale(0.9); }
+
+        .date-result-box {
+            background: var(--display-bg);
+            border-radius: 13px;
+            padding: 14px 18px;
+            margin-top: 6px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            transition: background 0.4s ease;
+        }
+
+        .date-result-box .date-result-label {
+            color: var(--text-muted);
+            font-size: 0.62rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .date-result-box .date-result-value {
+            color: var(--text-primary);
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+        .date-result-box .date-result-value.hijri {
+            color: var(--result-hijri);
+        }
+
+        .date-result-box .date-result-value.gregorian {
+            color: var(--result-gregorian);
+        }
+
         @media (max-width: 480px) {
-            body {
-                padding: 10px;
-            }
-            .mode-tab {
-                padding: 8px 6px;
-                font-size: 0.75rem;
-            }
-            .display {
-                padding: 14px 16px;
-                min-height: 76px;
-                margin-bottom: 16px;
-            }
-            .display .result {
-                font-size: 1.8rem;
-            }
-            .display .expression {
-                font-size: 0.85rem;
-            }
-            .btn-calc {
-                font-size: 1.1rem;
-                border-radius: 12px;
-            }
-            .row {
-                margin-bottom: 6px;
-            }
-            .row.g-2 {
-                --bs-gutter-x: 0.3rem;
-            }
-            .footer-text {
-                font-size: 0.65rem;
-                margin-top: 12px;
-            }
-            .conv-numpad {
-                gap: 5px;
-            }
-            .conv-select {
-                padding: 8px 10px;
-                font-size: 0.75rem;
-            }
-            .conv-select-group {
-                gap: 6px;
-            }
-            .conv-swap {
-                width: 32px;
-                height: 32px;
-                font-size: 0.9rem;
-            }
-            .converter-display {
-                padding: 14px 16px;
-            }
-            .converter-display .conv-input {
-                font-size: 1.5rem;
-            }
-            .converter-display .conv-result {
-                font-size: 1.3rem;
-            }
-            .conv-cat-btn {
-                padding: 6px 4px;
-                font-size: 0.65rem;
-                min-width: 44px;
-            }
-            .conv-subtab {
-                padding: 5px 6px;
-                font-size: 0.65rem;
-            }
-            .date-input {
-                padding: 8px 10px;
-                font-size: 0.75rem;
-            }
-            .date-swap-btn {
-                width: 30px;
-                height: 30px;
-                font-size: 0.85rem;
-            }
-            .date-result-box {
-                padding: 10px 14px;
-            }
-            .date-result-box .date-result-value {
-                font-size: 1.1rem;
-            }
+            body { padding: 10px; }
+            .calculator { padding: 18px 14px; border-radius: 22px; }
+            .theme-toggle { top: 10px; right: 10px; width: 38px; height: 38px; font-size: 1.1rem; }
+            .mode-tab { padding: 8px 6px; font-size: 0.72rem; }
+            .display { padding: 14px 16px; min-height: 76px; margin-bottom: 16px; }
+            .display .result { font-size: 1.8rem; }
+            .display .expression { font-size: 0.85rem; }
+            .btn-calc { font-size: 1.1rem; border-radius: 12px; }
+            .row { margin-bottom: 6px; }
+            .row.g-2 { --bs-gutter-x: 0.3rem; }
+            .footer-text { font-size: 0.62rem; margin-top: 12px; }
+            .conv-numpad { gap: 5px; }
+            .conv-select { padding: 8px 10px; font-size: 0.72rem; }
+            .conv-select-group { gap: 6px; }
+            .conv-swap { width: 32px; height: 32px; font-size: 0.9rem; }
+            .converter-display { padding: 14px 16px; }
+            .converter-display .conv-input { font-size: 1.5rem; }
+            .converter-display .conv-result { font-size: 1.3rem; }
+            .conv-cat-btn { padding: 6px 4px; font-size: 0.62rem; min-width: 44px; }
+            .conv-subtab { padding: 5px 6px; font-size: 0.62rem; }
+            .date-input { padding: 8px 10px; font-size: 0.72rem; }
+            .date-swap-btn { width: 30px; height: 30px; font-size: 0.85rem; }
+            .date-result-box { padding: 10px 14px; }
+            .date-result-box .date-result-value { font-size: 1.1rem; }
         }
 
         @media (max-width: 360px) {
-            body {
-                padding: 6px;
-            }
-            .btn-calc {
-                font-size: 0.95rem;
-                border-radius: 10px;
-            }
-            .display .result {
-                font-size: 1.5rem;
-            }
-            .conv-numpad {
-                gap: 4px;
-            }
-            .row.g-2 {
-                --bs-gutter-x: 0.2rem;
-            }
-            .row {
-                margin-bottom: 4px;
-            }
-            .conv-select {
-                padding: 6px 8px;
-                font-size: 0.7rem;
-            }
-            .mode-tab {
-                padding: 6px 4px;
-                font-size: 0.7rem;
-            }
+            body { padding: 6px; }
+            .calculator { padding: 12px 8px; border-radius: 18px; }
+            .theme-toggle { top: 6px; right: 6px; width: 34px; height: 34px; font-size: 1rem; }
+            .btn-calc { font-size: 0.95rem; border-radius: 10px; }
+            .display .result { font-size: 1.5rem; }
+            .conv-numpad { gap: 4px; }
+            .row.g-2 { --bs-gutter-x: 0.2rem; }
+            .row { margin-bottom: 4px; }
+            .conv-select { padding: 6px 8px; font-size: 0.65rem; }
+            .mode-tab { padding: 6px 4px; font-size: 0.65rem; }
         }
     </style>
 </head>
 
 <body>
+
+    <button class="theme-toggle" id="themeToggle" title="Toggle theme">&#9790;</button>
 
     <div class="calculator" id="app">
         <div class="mode-tabs">
@@ -1516,6 +1437,21 @@
                 document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
                 document.getElementById('panel-' + this.dataset.mode).classList.add('active');
             });
+        });
+
+        // ====== THEME TOGGLE ======
+
+        const themeToggle = document.getElementById('themeToggle');
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        themeToggle.textContent = savedTheme === 'dark' ? '\u2600' : '\uD83C\uDF19';
+
+        themeToggle.addEventListener('click', function () {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            this.textContent = next === 'dark' ? '\u2600' : '\uD83C\uDF19';
         });
     </script>
 
