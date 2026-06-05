@@ -1,0 +1,6 @@
+[      69ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://localhost:8000/favicon.ico:0
+[   13259ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://localhost:8000/favicon.ico:0
+[   34398ms] [LOG] {"action":"calc-handler-fired","calcActive":false,"btnClasses":"btn-calc number","dataSet":"conv"} @ :15
+[   34398ms] [LOG] GUARD WORKS: returning early @ :24
+[   81209ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://localhost:8000/favicon.ico:0
+[  129313ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://localhost:8000/favicon.ico:0

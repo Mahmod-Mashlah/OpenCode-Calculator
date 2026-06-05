@@ -6,53 +6,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Funky OpenCode Calculator 0_0</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=5">
 </head>
 
 <body>
 
-    <button class="theme-toggle" id="themeToggle" title="Toggle theme">&#9790;</button>
+    <div class="top-btns">
+        <button class="top-btn mute-btn" id="muteBtn" title="Toggle sound">&#128264;</button>
+        <button class="top-btn theme-toggle" id="themeToggle" title="Toggle theme">&#9790;</button>
+    </div>
 
     <div class="calculator" id="app">
+        <div class="calc-brand calc-brand-calc">&#9835; FUNKY CALC &#9835;</div>
+        <div class="calc-brand calc-brand-conv" style="display:none;">&#8644; FUNKY CONVERT &#8644;</div>
+
         <div class="mode-tabs">
             <button class="mode-tab active" data-mode="calc">&#9835; CALC</button>
             <button class="mode-tab" data-mode="conv">&#8644; CONVERT</button>
         </div>
 
         <div class="panel active" id="panel-calc">
-            <div class="display">
+            <div class="display" id="calcDisplay">
                 <div class="expression" id="expression"></div>
                 <div class="result" id="result">0</div>
             </div>
 
-            <div class="row g-2">
+            <div class="row g-2 btn-row">
+                <div class="col-3"><button class="btn-calc paren" data-val="(">(</button></div>
+                <div class="col-3"><button class="btn-calc paren" data-val=")">)</button></div>
                 <div class="col-3"><button class="btn-calc clear" data-val="C">C</button></div>
                 <div class="col-3"><button class="btn-calc delete" data-val="DEL">DEL</button></div>
+            </div>
+            <div class="row g-2 btn-row">
+                <div class="col-3"><button class="btn-calc plusminus" data-val="±">±</button></div>
                 <div class="col-3"><button class="btn-calc percent" data-val="%">%</button></div>
                 <div class="col-3"><button class="btn-calc operator" data-val="/">&divide;</button></div>
+                <div class="col-3"><button class="btn-calc operator" data-val="*">&times;</button></div>
             </div>
-            <div class="row g-2">
+            <div class="row g-2 btn-row">
                 <div class="col-3"><button class="btn-calc number" data-val="7">7</button></div>
                 <div class="col-3"><button class="btn-calc number" data-val="8">8</button></div>
                 <div class="col-3"><button class="btn-calc number" data-val="9">9</button></div>
-                <div class="col-3"><button class="btn-calc operator" data-val="*">&times;</button></div>
+                <div class="col-3"><button class="btn-calc operator" data-val="-">&minus;</button></div>
             </div>
-            <div class="row g-2">
+            <div class="row g-2 btn-row">
                 <div class="col-3"><button class="btn-calc number" data-val="4">4</button></div>
                 <div class="col-3"><button class="btn-calc number" data-val="5">5</button></div>
                 <div class="col-3"><button class="btn-calc number" data-val="6">6</button></div>
-                <div class="col-3"><button class="btn-calc operator" data-val="-">&minus;</button></div>
+                <div class="col-3"><button class="btn-calc operator" data-val="+">+</button></div>
             </div>
-            <div class="row g-2">
+            <div class="row g-2 btn-row">
                 <div class="col-3"><button class="btn-calc number" data-val="1">1</button></div>
                 <div class="col-3"><button class="btn-calc number" data-val="2">2</button></div>
                 <div class="col-3"><button class="btn-calc number" data-val="3">3</button></div>
-                <div class="col-3"><button class="btn-calc operator" data-val="+">+</button></div>
-            </div>
-            <div class="row g-2">
-                <div class="col-6"><button class="btn-calc number span-two" data-val="0">0</button></div>
                 <div class="col-3"><button class="btn-calc decimal" data-val=".">.</button></div>
-                <div class="col-3"><button class="btn-calc equals" data-val="=">=</button></div>
+            </div>
+            <div class="row g-2 btn-row">
+                <div class="col-6"><button class="btn-calc number span-two" data-val="0">0</button></div>
+                <div class="col-6"><button class="btn-calc equals span-two" data-val="=">=</button></div>
             </div>
         </div>
 
@@ -96,11 +107,11 @@
                     <button class="btn-calc number" data-conv="7">7</button>
                     <button class="btn-calc number" data-conv="8">8</button>
                     <button class="btn-calc number" data-conv="9">9</button>
-                    <button class="btn-calc delete" data-conv="DEL">DEL</button>
+                    <button class="btn-calc clear" data-conv="C">C</button>
                     <button class="btn-calc number" data-conv="4">4</button>
                     <button class="btn-calc number" data-conv="5">5</button>
                     <button class="btn-calc number" data-conv="6">6</button>
-                    <button class="btn-calc clear" data-conv="C">C</button>
+                    <button class="btn-calc delete" data-conv="DEL">DEL</button>
                     <button class="btn-calc number" data-conv="1">1</button>
                     <button class="btn-calc number" data-conv="2">2</button>
                     <button class="btn-calc number" data-conv="3">3</button>
@@ -129,7 +140,7 @@
                     <span class="date-label">CE</span>
                     <input class="date-input" id="dateDay" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Day" style="flex:1;">
                     <input class="date-input" id="dateMonth" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Month" style="flex:1;">
-                    <input class="date-input" id="dateYear" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Year" style="flex:1.5;">
+                    <input class="date-input" id="dateYear" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Year" style="flex:1;">
                 </div>
 
                 <div class="date-row" id="hijriInputs" style="display:none;">
@@ -149,7 +160,7 @@
                         <option value="11">Dhu'l-Qi'dah</option>
                         <option value="12">Dhu'l-Hijjah</option>
                     </select>
-                    <input class="date-input" id="hijriYear" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Year" style="flex:1.5;">
+                    <input class="date-input" id="hijriYear" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Year" style="flex:1;">
                 </div>
 
                 <div class="date-result-box">
@@ -159,10 +170,10 @@
             </div>
         </div>
 
-        <div class="footer-text">&#9835; FUNKY CALCULATOR &#9835;</div>
+        <div class="footer-text calc-footer">&#9835; FUNKY CALCULATOR &#9835;</div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=3"></script>
 
 </body>
 

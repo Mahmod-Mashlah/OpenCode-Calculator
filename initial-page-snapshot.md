@@ -1,0 +1,35 @@
+- generic [active] [ref=e1] [box=0,-192,1023,894]:
+  - button "🌙" [ref=e2] [cursor=pointer] [box=963,16,44,44]
+  - generic [ref=e3] [box=272,-176,480,862]:
+    - generic [ref=e4] [box=291,-154,441,26]: ♫ FUNKY CALC ♫
+    - generic [ref=e5] [box=291,-114,441,46]:
+      - button "♫ CALC" [ref=e6] [cursor=pointer] [box=296,-109,214,37]
+      - button "⇄ CONVERT" [ref=e7] [cursor=pointer] [box=514,-109,214,37]
+    - generic [ref=e8] [box=291,-50,441,671]:
+      - generic [ref=e11] [box=311,-11,402,46]: "0"
+      - generic [ref=e12] [box=291,62,441,112]:
+        - button "C" [ref=e14] [cursor=pointer] [box=294,70,104,104]
+        - button "%" [ref=e16] [cursor=pointer] [box=405,70,104,104]
+        - button "DEL" [ref=e18] [cursor=pointer] [box=515,70,104,104]
+        - button "÷" [ref=e20] [cursor=pointer] [box=625,70,104,104]
+      - generic [ref=e21] [box=291,174,441,112]:
+        - button "7" [ref=e23] [cursor=pointer] [box=294,182,104,104]
+        - button "8" [ref=e25] [cursor=pointer] [box=405,182,104,104]
+        - button "9" [ref=e27] [cursor=pointer] [box=515,182,104,104]
+        - button "×" [ref=e29] [cursor=pointer] [box=625,182,104,104]
+      - generic [ref=e30] [box=291,286,441,112]:
+        - button "4" [ref=e32] [cursor=pointer] [box=294,294,104,104]
+        - button "5" [ref=e34] [cursor=pointer] [box=405,294,104,104]
+        - button "6" [ref=e36] [cursor=pointer] [box=515,294,104,104]
+        - button "−" [ref=e38] [cursor=pointer] [box=625,294,104,104]
+      - generic [ref=e39] [box=291,398,441,112]:
+        - button "1" [ref=e41] [cursor=pointer] [box=294,406,104,104]
+        - button "2" [ref=e43] [cursor=pointer] [box=405,406,104,104]
+        - button "3" [ref=e45] [cursor=pointer] [box=515,406,104,104]
+        - button "+" [ref=e47] [cursor=pointer] [box=625,406,104,104]
+      - generic [ref=e48] [box=291,509,441,112]:
+        - button "0" [ref=e50] [cursor=pointer] [box=294,517,214,34]
+        - button "." [ref=e52] [cursor=pointer] [box=515,517,104,104]
+        - button "=" [ref=e54] [cursor=pointer] [box=625,517,104,104]
+    - text: ▼ ▼
+    - generic [ref=e55] [box=291,637,441,28]: ♫ FUNKY CALCULATOR ♫

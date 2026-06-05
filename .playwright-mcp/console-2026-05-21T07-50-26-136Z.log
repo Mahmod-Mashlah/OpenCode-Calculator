@@ -1,0 +1,15 @@
+[      87ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://localhost:8000/favicon.ico:0
+[   11035ms] [LOG] GUARD: returning early, calc not active @ http://localhost:8000/script.js?v=2:108
+[   27217ms] [LOG] GUARD: returning early, calc not active @ http://localhost:8000/script.js?v=2:108
+[   27217ms] [LOG] GUARD: returning early, calc not active @ http://localhost:8000/script.js?v=2:108
+[   27217ms] [LOG] GUARD: returning early, calc not active @ http://localhost:8000/script.js?v=2:108
+[   27218ms] [LOG] GUARD: returning early, calc not active @ http://localhost:8000/script.js?v=2:108
+[   27218ms] [LOG] GUARD: returning early, calc not active @ http://localhost:8000/script.js?v=2:108
+[   27628ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://localhost:8000/favicon.ico:0
+[   39263ms] [LOG] GUARD: returning early, calc not active @ http://localhost:8000/script.js?v=2:108
+[   39263ms] [LOG] GUARD: returning early, calc not active @ http://localhost:8000/script.js?v=2:108
+[   39263ms] [LOG] GUARD: returning early, calc not active @ http://localhost:8000/script.js?v=2:108
+[  116324ms] [LOG] GUARD: returning early, calc not active @ http://localhost:8000/script.js?v=2:108
+[  116324ms] [LOG] GUARD: returning early, calc not active @ http://localhost:8000/script.js?v=2:108
+[  116324ms] [LOG] GUARD: returning early, calc not active @ http://localhost:8000/script.js?v=2:108
+[  116700ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://localhost:8000/favicon.ico:0

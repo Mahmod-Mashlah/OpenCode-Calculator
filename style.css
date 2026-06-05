@@ -28,6 +28,9 @@
     --toggle-bg: rgba(255, 255, 255, 0.1);
     --toggle-hover: rgba(255, 255, 255, 0.2);
     --row-label-color: rgba(255, 255, 255, 0.5);
+    --highlight-color: #00f2fe;
+    --mode-calc-accent: #667eea;
+    --mode-conv-accent: #f093fb;
 }
 
 [data-theme="light"] {
@@ -60,6 +63,9 @@
     --toggle-bg: rgba(0, 0, 0, 0.08);
     --toggle-hover: rgba(0, 0, 0, 0.15);
     --row-label-color: rgba(26, 26, 46, 0.55);
+    --highlight-color: #00bcd4;
+    --mode-calc-accent: #5c6bc0;
+    --mode-conv-accent: #ec407a;
 }
 
 * {
@@ -76,19 +82,26 @@ body {
     overflow-x: hidden;
     padding: 16px;
     transition: background 0.4s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.theme-toggle {
+.top-btns {
     position: fixed;
     top: 16px;
     right: 16px;
     z-index: 1000;
+    display: flex;
+    gap: 8px;
+}
+
+.top-btn {
     width: 44px;
     height: 44px;
-    border: none;
-    border-radius: 50%;
+    border: 2px solid var(--border-light);
+    border-radius: 12px;
     background: var(--toggle-bg);
-    backdrop-filter: blur(12px);
     color: var(--text-primary);
     font-size: 1.3rem;
     cursor: pointer;
@@ -99,49 +112,73 @@ body {
     box-shadow: 0 4px 16px var(--shadow);
 }
 
-.theme-toggle:hover {
+.top-btn:hover {
     background: var(--toggle-hover);
     transform: scale(1.1);
 }
+
+.mute-btn:hover { transform: scale(1.1) rotate(10deg); }
+.mute-btn.muted { opacity: 0.5; }
 
 .calculator {
     max-width: 480px;
     width: 100%;
     margin: 0 auto;
     background: var(--surface);
-    backdrop-filter: blur(20px);
-    border-radius: 28px;
-    padding: 24px 22px;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 25px 60px var(--shadow), inset 0 1px 0 var(--border-light);
-    transition: background 0.4s ease, box-shadow 0.4s ease;
+    border-radius: 12px;
+    padding: 20px 18px;
+    border: 2px solid var(--border-light);
+    box-shadow: 0 25px 60px var(--shadow);
+    transition: background 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
 }
+
+.calc-brand {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.65rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+    transition: color 0.4s ease;
+}
+
+.calc-brand-calc { color: var(--mode-calc-accent); opacity: 0.6; }
+.calc-brand-conv { color: var(--mode-conv-accent); opacity: 0.6; }
 
 .mode-tabs {
     display: flex;
-    gap: 8px;
-    margin-bottom: 20px;
+    gap: 4px;
+    margin-bottom: 18px;
     background: var(--tab-bg);
-    border-radius: 14px;
+    border-radius: 10px;
     padding: 4px;
+    border: 1px solid var(--border-color);
 }
 
 .mode-tab {
     flex: 1;
     border: none;
-    border-radius: 10px;
-    padding: 10px;
-    font-size: 0.82rem;
+    border-radius: 8px;
+    padding: 9px 10px;
+    font-size: 0.78rem;
     font-weight: 700;
     color: var(--text-secondary);
     background: transparent;
     cursor: pointer;
     transition: all 0.3s ease;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
 }
 
-.mode-tab.active {
+.mode-tab.active[data-mode="calc"] {
     background: var(--accent-purple);
+    color: #fff;
+    box-shadow: 0 4px 15px var(--shadow);
+}
+
+.mode-tab.active[data-mode="conv"] {
+    background: var(--accent-pink);
     color: #fff;
     box-shadow: 0 4px 15px var(--shadow);
 }
@@ -155,98 +192,91 @@ body {
 
 .display {
     background: var(--display-bg);
-    border-radius: 18px;
-    padding: 20px 22px;
-    margin-bottom: 20px;
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 18px;
     text-align: right;
-    min-height: 96px;
+    min-height: 88px;
     display: flex;
     flex-direction: column;
     justify-content: end;
-    border: 1px solid var(--border-color);
-    transition: background 0.4s ease;
+    border: 2px solid var(--border-color);
+    transition: background 0.4s ease, border-color 0.4s ease;
 }
 
 .display .expression {
     color: var(--text-secondary);
-    font-size: 1rem;
-    min-height: 1.5em;
+    font-size: 0.92rem;
+    min-height: 1.4em;
     word-break: break-all;
+    font-weight: 500;
 }
 
 .display .result {
     color: var(--text-primary);
-    font-size: 2.3rem;
-    font-weight: 700;
-    line-height: 1.2;
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1.15;
     word-break: break-all;
-    text-shadow: 0 0 20px var(--shadow);
+    letter-spacing: -1px;
+    transition: color 0.3s ease;
+}
+
+.display .result.highlight {
+    color: var(--highlight-color);
+    animation: resultPop 0.5s ease;
+}
+
+@keyframes resultPop {
+    0% { transform: scale(1); }
+    30% { transform: scale(1.08); }
+    100% { transform: scale(1); }
+}
+
+.result.error-result {
+    color: #ff6b6b !important;
 }
 
 .btn-calc {
     width: 100%;
     aspect-ratio: 1 / 1;
     border: none;
-    border-radius: 16px;
+    border-radius: 10px;
     font-size: 1.4rem;
     font-weight: 700;
     color: var(--btn-text);
-    transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s, filter 0.2s;
+    transition: transform 0.1s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s, filter 0.15s;
     cursor: pointer;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 4px 12px var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-}
-
-.btn-calc::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, transparent 60%);
-    pointer-events: none;
-    border-radius: inherit;
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 .btn-calc:active {
-    transform: scale(0.85);
-    box-shadow: 0 2px 6px var(--shadow);
-}
-
-.btn-calc:active::after {
-    content: '';
-    position: absolute;
-    inset: -4px;
-    border-radius: inherit;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
-    animation: ripple 0.4s ease-out;
-}
-
-@keyframes ripple {
-    from { opacity: 1; transform: scale(0.5); }
-    to { opacity: 0; transform: scale(2); }
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
 }
 
 @keyframes wiggle {
-    0%, 100% { transform: rotate(0deg); }
-    20% { transform: rotate(-4deg) scale(1.05); }
-    40% { transform: rotate(4deg) scale(1.05); }
-    60% { transform: rotate(-2deg) scale(1.02); }
-    80% { transform: rotate(2deg) scale(1.02); }
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    20% { transform: translateY(-3px) rotate(-5deg) scale(1.05); }
+    40% { transform: translateY(-3px) rotate(5deg) scale(1.05); }
+    60% { transform: translateY(-1px) rotate(-2deg) scale(1.02); }
+    80% { transform: translateY(-1px) rotate(2deg) scale(1.02); }
 }
 
 @keyframes pop {
-    0% { transform: scale(1); }
-    40% { transform: scale(1.2); }
-    100% { transform: scale(1); }
+    0% { transform: scale(1) translateY(0); }
+    40% { transform: scale(1.15) translateY(-3px); }
+    100% { transform: scale(1) translateY(0); }
 }
 
 .btn-calc:hover {
-    filter: brightness(1.15);
-    transform: translateY(-2px);
+    filter: brightness(1.12);
 }
 
 .btn-calc.wiggle { animation: wiggle 0.4s ease; }
-.btn-calc.pop { animation: pop 0.35s ease; }
+.btn-calc.pop { animation: pop 0.3s ease; }
 
 .btn-calc.number { background: var(--btn-number); }
 .btn-calc.operator { background: var(--btn-operator); }
@@ -256,47 +286,58 @@ body {
 .btn-calc.special { background: var(--btn-special); }
 .btn-calc.percent { background: var(--btn-special); }
 .btn-calc.decimal { background: var(--btn-number); }
+.btn-calc.paren { background: var(--btn-special); color: var(--btn-text-dark); }
+.btn-calc.plusminus { background: var(--btn-special); color: var(--btn-text-dark); }
 
-.row {
-    margin-bottom: 10px;
+.btn-row {
+    margin-bottom: 8px;
 }
-.row:last-child {
+.btn-row:last-child {
     margin-bottom: 0;
 }
-.row.g-2 {
-    --bs-gutter-x: 0.5rem;
+.btn-row.g-2 {
+    --bs-gutter-x: 0.4rem;
     margin-left: 0;
     margin-right: 0;
 }
 
 .btn-calc.span-two {
     aspect-ratio: auto;
-    border-radius: 16px;
+    border-radius: 10px;
+}
+
+.equals-row .btn-calc.equals {
+    aspect-ratio: auto;
+    border-radius: 10px;
+    font-size: 1.6rem;
 }
 
 .footer-text {
     text-align: center;
     color: var(--text-muted);
-    font-size: 0.72rem;
+    font-size: 0.62rem;
     margin-top: 16px;
-    letter-spacing: 1px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-color);
 }
 
 .converter-display {
     background: var(--display-bg);
-    border-radius: 18px;
-    padding: 18px 22px;
-    margin-bottom: 18px;
-    border: 1px solid var(--border-color);
-    transition: background 0.4s ease;
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 16px;
+    border: 2px solid var(--border-color);
+    transition: background 0.4s ease, border-color 0.4s ease;
 }
 
 .converter-display .conv-label {
     color: var(--text-secondary);
-    font-size: 0.72rem;
-    letter-spacing: 1px;
+    font-size: 0.68rem;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
 }
 
 .converter-display .conv-input {
@@ -323,10 +364,14 @@ body {
     transition: color 0.4s ease;
 }
 
+.converter-display .conv-result.highlight {
+    animation: resultPop 0.4s ease;
+}
+
 .conv-select-group {
     display: flex;
-    gap: 10px;
-    margin-bottom: 14px;
+    gap: 8px;
+    margin-bottom: 12px;
     align-items: center;
 }
 
@@ -337,12 +382,12 @@ body {
 
 .conv-select {
     width: 100%;
-    padding: 11px 14px;
-    border-radius: 12px;
-    border: 1px solid var(--border-light);
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 2px solid var(--border-light);
     background: var(--select-bg);
     color: var(--text-primary);
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     font-weight: 600;
     outline: none;
     cursor: pointer;
@@ -366,7 +411,7 @@ body {
     top: 50%;
     transform: translateY(-50%);
     color: var(--text-muted);
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     pointer-events: none;
 }
 
@@ -374,7 +419,7 @@ body {
     width: 38px;
     height: 38px;
     border: none;
-    border-radius: 50%;
+    border-radius: 10px;
     background: var(--accent-pink);
     color: #fff;
     font-size: 1.1rem;
@@ -383,17 +428,17 @@ body {
     align-items: center;
     justify-content: center;
     transition: transform 0.2s, box-shadow 0.2s;
-    box-shadow: 0 4px 12px var(--shadow);
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.25);
     flex-shrink: 0;
 }
 
 .conv-swap:hover { transform: scale(1.1); }
-.conv-swap:active { transform: scale(0.9); }
+.conv-swap:active { transform: scale(0.9) translateY(2px); }
 
 .conv-numpad {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
+    gap: 6px;
 }
 
 .conv-numpad .btn-calc.span-two { aspect-ratio: auto; }
@@ -402,27 +447,27 @@ body {
 
 .conv-category-label {
     color: var(--text-muted);
-    font-size: 0.68rem;
-    letter-spacing: 1px;
+    font-size: 0.65rem;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
     margin-bottom: 6px;
 }
 
 .conv-category-btns {
     display: flex;
-    gap: 5px;
+    gap: 4px;
     flex-wrap: wrap;
 }
 
 .conv-cat-btn {
     flex: 1;
-    min-width: 56px;
-    padding: 7px 5px;
-    border: 1px solid var(--border-light);
-    border-radius: 9px;
+    min-width: 52px;
+    padding: 7px 4px;
+    border: 2px solid var(--border-light);
+    border-radius: 8px;
     background: var(--select-bg);
     color: var(--text-secondary);
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s, background 0.4s ease;
@@ -442,19 +487,20 @@ body {
 
 .conv-subtabs {
     display: flex;
-    gap: 6px;
+    gap: 4px;
     margin-bottom: 12px;
     background: var(--subtab-bg);
-    border-radius: 10px;
+    border-radius: 8px;
     padding: 3px;
+    border: 1px solid var(--border-color);
 }
 
 .conv-subtab {
     flex: 1;
     border: none;
-    border-radius: 8px;
+    border-radius: 6px;
     padding: 7px 10px;
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     font-weight: 700;
     color: var(--text-secondary);
     background: transparent;
@@ -477,28 +523,28 @@ body {
 
 .date-row {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .date-row .date-label {
     color: var(--row-label-color);
-    font-size: 0.68rem;
+    font-size: 0.65rem;
     font-weight: 600;
     letter-spacing: 0.5px;
     text-transform: uppercase;
-    min-width: 34px;
+    min-width: 30px;
 }
 
 .date-row .date-input {
     flex: 1;
-    padding: 10px 12px;
-    border-radius: 11px;
-    border: 1px solid var(--border-light);
+    padding: 9px 10px;
+    border-radius: 8px;
+    border: 2px solid var(--border-light);
     background: var(--select-bg);
     color: var(--text-primary);
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     outline: none;
     transition: border-color 0.2s, background 0.4s ease;
 }
@@ -520,7 +566,7 @@ body {
     width: 34px;
     height: 34px;
     border: none;
-    border-radius: 50%;
+    border-radius: 8px;
     background: var(--accent-blue);
     color: #fff;
     font-size: 1rem;
@@ -529,27 +575,27 @@ body {
     align-items: center;
     justify-content: center;
     transition: transform 0.2s;
-    box-shadow: 0 4px 12px var(--shadow);
+    box-shadow: 0 3px 0 rgba(0, 0, 0, 0.25);
     flex-shrink: 0;
 }
 
 .date-swap-btn:hover { transform: scale(1.1); }
-.date-swap-btn:active { transform: scale(0.9); }
+.date-swap-btn:active { transform: scale(0.9) translateY(2px); }
 
 .date-result-box {
     background: var(--display-bg);
-    border-radius: 13px;
-    padding: 14px 18px;
+    border-radius: 10px;
+    padding: 12px 16px;
     margin-top: 6px;
-    border: 1px solid var(--border-color);
+    border: 2px solid var(--border-color);
     text-align: center;
-    transition: background 0.4s ease;
+    transition: background 0.4s ease, border-color 0.4s ease;
 }
 
 .date-result-box .date-result-label {
     color: var(--text-muted);
-    font-size: 0.62rem;
-    letter-spacing: 1.5px;
+    font-size: 0.6rem;
+    letter-spacing: 2px;
     text-transform: uppercase;
 }
 
@@ -570,40 +616,63 @@ body {
 
 @media (max-width: 480px) {
     body { padding: 10px; }
-    .calculator { padding: 18px 14px; border-radius: 22px; }
-    .theme-toggle { top: 10px; right: 10px; width: 38px; height: 38px; font-size: 1.1rem; }
-    .mode-tab { padding: 8px 6px; font-size: 0.72rem; }
-    .display { padding: 14px 16px; min-height: 76px; margin-bottom: 16px; }
-    .display .result { font-size: 1.8rem; }
-    .display .expression { font-size: 0.85rem; }
-    .btn-calc { font-size: 1.1rem; border-radius: 12px; }
-    .row { margin-bottom: 6px; }
-    .row.g-2 { --bs-gutter-x: 0.3rem; }
-    .footer-text { font-size: 0.62rem; margin-top: 12px; }
-    .conv-numpad { gap: 5px; }
-    .conv-select { padding: 8px 10px; font-size: 0.72rem; }
+    .calculator { padding: 16px 12px; border-radius: 10px; }
+    .top-btns { top: 10px; right: 10px; }
+    .top-btn { width: 38px; height: 38px; font-size: 1.1rem; border-radius: 10px; }
+    .calc-brand { font-size: 0.58rem; margin-bottom: 10px; padding-bottom: 8px; }
+    .mode-tab { padding: 7px 6px; font-size: 0.7rem; }
+    .display { padding: 12px 14px; min-height: 72px; margin-bottom: 14px; border-radius: 8px; }
+    .display .result { font-size: 2rem; }
+    .display .expression { font-size: 0.82rem; }
+    .btn-calc { font-size: 1.15rem; border-radius: 8px; }
+    .btn-row { margin-bottom: 6px; }
+    .btn-row.g-2 { --bs-gutter-x: 0.3rem; }
+    .btn-calc.span-two { border-radius: 8px; }
+    .equals-row .btn-calc.equals { border-radius: 8px; font-size: 1.3rem; }
+    .footer-text { font-size: 0.55rem; margin-top: 12px; padding-top: 10px; letter-spacing: 2px; }
+    .conv-numpad { gap: 4px; }
+    .conv-select { padding: 8px 10px; font-size: 0.72rem; border-radius: 8px; }
     .conv-select-group { gap: 6px; }
-    .conv-swap { width: 32px; height: 32px; font-size: 0.9rem; }
-    .converter-display { padding: 14px 16px; }
+    .conv-swap { width: 32px; height: 32px; font-size: 0.9rem; border-radius: 8px; }
+    .converter-display { padding: 12px 14px; border-radius: 8px; }
     .converter-display .conv-input { font-size: 1.5rem; }
     .converter-display .conv-result { font-size: 1.3rem; }
-    .conv-cat-btn { padding: 6px 4px; font-size: 0.62rem; min-width: 44px; }
-    .conv-subtab { padding: 5px 6px; font-size: 0.62rem; }
-    .date-input { padding: 8px 10px; font-size: 0.72rem; }
-    .date-swap-btn { width: 30px; height: 30px; font-size: 0.85rem; }
-    .date-result-box { padding: 10px 14px; }
+    .conv-cat-btn { padding: 6px 3px; font-size: 0.6rem; min-width: 42px; border-radius: 6px; }
+    .conv-subtab { padding: 5px 6px; font-size: 0.6rem; }
+    .date-input { padding: 8px 8px; font-size: 0.72rem; border-radius: 6px; }
+    .date-swap-btn { width: 30px; height: 30px; font-size: 0.85rem; border-radius: 6px; }
+    .date-result-box { padding: 10px 12px; border-radius: 8px; }
     .date-result-box .date-result-value { font-size: 1.1rem; }
+}
+
+@media (max-width: 420px) {
+    .date-row { flex-wrap: wrap; gap: 4px; }
+    .date-row .date-label { min-width: 24px; font-size: 0.6rem; }
+    .date-row .date-input { flex: 1 1 30% !important; min-width: 56px; padding: 6px; font-size: 0.65rem; }
+    .date-row select.date-input { flex: 1 1 auto !important; }
+    .date-result-box .date-result-value { font-size: 1rem; }
+    .conv-category-btns { gap: 3px; }
+    .conv-cat-btn { min-width: 38px; padding: 5px 2px; font-size: 0.55rem; }
+    #gregorianInputs, #hijriInputs { gap: 4px; }
 }
 
 @media (max-width: 360px) {
     body { padding: 6px; }
-    .calculator { padding: 12px 8px; border-radius: 18px; }
-    .theme-toggle { top: 6px; right: 6px; width: 34px; height: 34px; font-size: 1rem; }
-    .btn-calc { font-size: 0.95rem; border-radius: 10px; }
-    .display .result { font-size: 1.5rem; }
-    .conv-numpad { gap: 4px; }
-    .row.g-2 { --bs-gutter-x: 0.2rem; }
-    .row { margin-bottom: 4px; }
+    .calculator { padding: 12px 8px; border-radius: 8px; }
+    .top-btns { top: 6px; right: 6px; }
+    .top-btn { width: 34px; height: 34px; font-size: 1rem; border-radius: 8px; }
+    .calc-brand { font-size: 0.5rem; margin-bottom: 8px; padding-bottom: 6px; }
+    .btn-calc { font-size: 1rem; border-radius: 6px; }
+    .display .result { font-size: 1.6rem; }
+    .display { padding: 10px 12px; min-height: 64px; border-radius: 6px; }
+    .conv-numpad { gap: 3px; }
+    .btn-row.g-2 { --bs-gutter-x: 0.2rem; }
+    .btn-row { margin-bottom: 4px; }
+    .btn-calc.span-two { border-radius: 6px; }
+    .equals-row .btn-calc.equals { border-radius: 6px; font-size: 1.1rem; }
     .conv-select { padding: 6px 8px; font-size: 0.65rem; }
-    .mode-tab { padding: 6px 4px; font-size: 0.65rem; }
+    .mode-tab { padding: 5px 4px; font-size: 0.62rem; }
+    .date-row { flex-direction: column; align-items: stretch; gap: 4px; }
+    .date-row .date-label { min-width: auto; }
+    .date-row .date-input { flex: 1 1 auto !important; min-width: 0; }
 }

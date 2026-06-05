@@ -1,0 +1,41 @@
+- generic [ref=e1]:
+  - button "🌙" [ref=e2] [cursor=pointer]
+  - generic [ref=e3]:
+    - generic [ref=e4]: ♫ FUNKY CALC ♫
+    - generic [ref=e5]:
+      - button "♫ CALC" [ref=e6] [cursor=pointer]
+      - button "⇄ CONVERT" [ref=e7] [cursor=pointer]
+    - generic [ref=e56]:
+      - generic [ref=e62]:
+        - generic [ref=e63]: Category
+        - generic [ref=e64]:
+          - button "Time" [ref=e65] [cursor=pointer]
+          - button "Length" [ref=e66] [cursor=pointer]
+          - button "Weight" [ref=e67] [cursor=pointer]
+          - button "Temp" [ref=e68] [cursor=pointer]
+          - button "Volume" [ref=e69] [cursor=pointer]
+          - button "Area" [ref=e70] [cursor=pointer]
+      - generic [ref=e71]:
+        - button "⏱ Duration" [ref=e72] [cursor=pointer]
+        - button "📅 Date" [active] [ref=e73] [cursor=pointer]
+      - text: ▼ ▼
+      - generic [ref=e96]:
+        - generic [ref=e97]:
+          - generic [ref=e98]: From
+          - combobox [ref=e99] [cursor=pointer]:
+            - option "CE" [selected]
+            - option "Hijri"
+          - button "⇆" [ref=e100] [cursor=pointer]
+          - generic [ref=e101]: To
+          - combobox [ref=e102] [cursor=pointer]:
+            - option "Hijri" [selected]
+            - option "CE"
+        - generic [ref=e103]:
+          - generic [ref=e104]: CE
+          - textbox "Day" [ref=e105]
+          - textbox "Month" [ref=e106]
+          - textbox "Year" [ref=e107]
+        - generic [ref=e108]:
+          - generic [ref=e109]: Converted Date
+          - generic [ref=e110]: "--"
+    - generic [ref=e55]: ♫ FUNKY CALCULATOR ♫

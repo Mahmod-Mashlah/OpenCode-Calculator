@@ -1,0 +1,41 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - button "🔈" [ref=e3] [cursor=pointer]
+    - button "🌙" [ref=e4] [cursor=pointer]
+  - generic [ref=e5]:
+    - generic [ref=e6]: ♫ FUNKY CALC ♫
+    - generic [ref=e7]:
+      - button "♫ CALC" [ref=e8] [cursor=pointer]
+      - button "⇄ CONVERT" [ref=e9] [cursor=pointer]
+    - generic [ref=e10]:
+      - generic [ref=e13]: "0"
+      - generic [ref=e14]:
+        - button "(" [ref=e16] [cursor=pointer]
+        - button ")" [ref=e18] [cursor=pointer]
+        - button "C" [ref=e20] [cursor=pointer]
+        - button "DEL" [ref=e22] [cursor=pointer]
+      - generic [ref=e23]:
+        - button "±" [ref=e25] [cursor=pointer]
+        - button "%" [ref=e27] [cursor=pointer]
+        - button "÷" [ref=e29] [cursor=pointer]
+        - button "×" [ref=e31] [cursor=pointer]
+      - generic [ref=e32]:
+        - button "7" [ref=e34] [cursor=pointer]
+        - button "8" [ref=e36] [cursor=pointer]
+        - button "9" [ref=e38] [cursor=pointer]
+        - button "−" [ref=e40] [cursor=pointer]
+      - generic [ref=e41]:
+        - button "4" [ref=e43] [cursor=pointer]
+        - button "5" [ref=e45] [cursor=pointer]
+        - button "6" [ref=e47] [cursor=pointer]
+        - button "+" [ref=e49] [cursor=pointer]
+      - generic [ref=e50]:
+        - button "1" [ref=e52] [cursor=pointer]
+        - button "2" [ref=e54] [cursor=pointer]
+        - button "3" [ref=e56] [cursor=pointer]
+        - button "." [ref=e58] [cursor=pointer]
+      - generic [ref=e59]:
+        - button "0" [ref=e61] [cursor=pointer]
+        - button "=" [ref=e63] [cursor=pointer]
+    - text: ▼ ▼
+    - generic [ref=e64]: ♫ FUNKY CALCULATOR ♫

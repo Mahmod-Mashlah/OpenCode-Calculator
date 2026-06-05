@@ -6,7 +6,10 @@ function getAudioCtx() {
     return audioCtx;
 }
 
+let isMuted = localStorage.getItem('opencode-muted') === 'true';
+
 function playSound(type) {
+    if (isMuted) return;
     try {
         const ctx = getAudioCtx();
         const osc = ctx.createOscillator();
@@ -69,6 +72,15 @@ function playSound(type) {
                 osc.start(ctx.currentTime);
                 osc.stop(ctx.currentTime + 0.1);
                 break;
+            case 'error':
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(200, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(50, ctx.currentTime + 0.2);
+                gain.gain.value = 0.1;
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 0.25);
+                break;
             default:
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(500, ctx.currentTime);
@@ -80,9 +92,17 @@ function playSound(type) {
     } catch (e) { }
 }
 
+const muteBtn = document.getElementById('muteBtn');
+if (isMuted) muteBtn.classList.add('muted');
+muteBtn.addEventListener('click', function () {
+    isMuted = !isMuted;
+    localStorage.setItem('opencode-muted', isMuted);
+    this.classList.toggle('muted');
+});
+
 const expressionEl = document.getElementById('expression');
 const resultEl = document.getElementById('result');
-const buttons = document.querySelectorAll('.btn-calc');
+const calcButtons = document.querySelectorAll('#panel-calc .btn-calc');
 
 let currentInput = '';
 let expression = '';
@@ -94,23 +114,36 @@ function updateDisplay() {
     expressionEl.textContent = expression;
 }
 
+function formatError(msg) {
+    resultEl.className = 'result error-result';
+    resultEl.textContent = msg;
+    expressionEl.textContent = expression;
+}
+
 function evaluate(expr) {
     try {
         const sanitized = expr.replace(/&divide;/g, '/').replace(/&times;/g, '*').replace(/\u00f7/g, '/').replace(/\u00d7/g, '*');
         const res = Function('"use strict"; return (' + sanitized + ')')();
-        return Number.isFinite(res) ? String(res) : 'Error';
+        if (!Number.isFinite(res)) {
+            if (String(res).includes('Infinity')) return 'Cannot divide by zero';
+            return 'Error';
+        }
+        return parseFloat(Number(res).toPrecision(12)).toString();
     } catch {
-        return 'Error';
+        return 'Math error';
     }
 }
 
-buttons.forEach(btn => {
+calcButtons.forEach(btn => {
     btn.addEventListener('click', function () {
         const val = this.dataset.val;
         const cls = this.className;
 
+        resultEl.classList.remove('highlight', 'error-result');
+
         this.classList.remove('wiggle', 'pop');
         void this.offsetWidth;
+
         if (val === '=') {
             this.classList.add('pop');
             playSound('equals');
@@ -120,6 +153,9 @@ buttons.forEach(btn => {
         } else if (val === 'DEL') {
             this.classList.add('wiggle');
             playSound('delete');
+        } else if (val === '(' || val === ')' || val === '±') {
+            this.classList.add('pop');
+            playSound('number');
         } else if (cls.includes('operator')) {
             this.classList.add('pop');
             playSound('operator');
@@ -140,27 +176,97 @@ buttons.forEach(btn => {
         if (val === 'DEL') {
             if (justEvaluated) return;
             if (currentInput.length > 0) {
-                currentInput = currentInput.slice(0, -1);
-                expression = expression.slice(0, -1);
+                const lastChar = expression.slice(-1);
+                if (lastChar === ' ') {
+                    expression = expression.slice(0, -3);
+                    currentInput = '';
+                } else {
+                    expression = expression.slice(0, -1);
+                    currentInput = currentInput.slice(0, -1);
+                }
             }
-            result = currentInput || '0';
+            result = currentInput || expression.replace(/\s+/g, '') || '0';
             updateDisplay();
             return;
         }
 
         if (val === '=') {
+            if (justEvaluated) return;
             if (expression) {
                 const ans = evaluate(expression);
+                if (ans === 'Cannot divide by zero' || ans === 'Math error' || ans === 'Error') {
+                    formatError(ans);
+                    playSound('error');
+                    return;
+                }
                 result = ans;
                 expression = expression + ' =';
                 justEvaluated = true;
+                resultEl.classList.add('highlight');
                 updateDisplay();
             }
             return;
         }
 
+        if (val === '±') {
+            if (justEvaluated) {
+                if (result !== '0' && result !== 'Error' && result !== 'Cannot divide by zero' && result !== 'Math error') {
+                    result = result.startsWith('-') ? result.slice(1) : '-' + result;
+                    expression = result;
+                    currentInput = result;
+                    justEvaluated = false;
+                    updateDisplay();
+                }
+                return;
+            }
+            if (currentInput && currentInput !== '0') {
+                const oldInput = currentInput;
+                currentInput = currentInput.startsWith('-') ? currentInput.slice(1) : '-' + currentInput;
+                const negateIdx = expression.lastIndexOf(oldInput);
+                if (negateIdx !== -1) {
+                    expression = expression.slice(0, negateIdx) + currentInput + expression.slice(negateIdx + oldInput.length);
+                }
+                result = expression;
+                updateDisplay();
+            }
+            return;
+        }
+
+        if (val === '(' || val === ')') {
+            if (justEvaluated) {
+                if (val === '(') {
+                    currentInput = '';
+                    expression = '(';
+                    result = '(';
+                    justEvaluated = false;
+                    updateDisplay();
+                }
+                return;
+            }
+            if (val === '(') {
+                const last = expression.trim().slice(-1);
+                if (last && /[\d.)]/.test(last)) {
+                    expression += ' \u00d7 (';
+                    currentInput = '';
+                } else {
+                    expression += '(';
+                    currentInput = '';
+                }
+            } else {
+                const openCount = (expression.match(/\(/g) || []).length;
+                const closeCount = (expression.match(/\)/g) || []).length;
+                if (closeCount < openCount && /[\d)]$/.test(expression.trim())) {
+                    expression += ')';
+                    currentInput = '';
+                }
+            }
+            result = expression;
+            updateDisplay();
+            return;
+        }
+
         if (justEvaluated) {
-            if (/^[0-9.]$/.test(val)) {
+            if (/^[0-9.(]$/.test(val)) {
                 currentInput = val;
                 expression = val;
                 result = val;
@@ -178,6 +284,16 @@ buttons.forEach(btn => {
         if (['+', '-', '*', '/', '%'].includes(val)) {
             if (currentInput === '' && expression === '') return;
             const lastChar = expression.slice(-1);
+            if (lastChar === '(') {
+                if (val === '-') {
+                    expression += val;
+                    currentInput = '';
+                    result = expression;
+                    updateDisplay();
+                    return;
+                }
+                return;
+            }
             if (['+', '-', '*', '/', '%'].includes(lastChar)) {
                 expression = expression.slice(0, -1) + val;
             } else {
@@ -213,19 +329,55 @@ buttons.forEach(btn => {
 document.addEventListener('keydown', e => {
     if (e.ctrlKey || e.metaKey) return;
     const tag = e.target.tagName;
-    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+    const isInputFocused = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT';
+    const isCalcActive = document.getElementById('panel-calc').classList.contains('active');
+
+    if (isInputFocused && isCalcActive) return;
+
+    if (e.key === 'Backspace' && isInputFocused && !isCalcActive) return;
+
     const keyMap = {
         '0': '0', '1': '1', '2': '2', '3': '3', '4': '4',
         '5': '5', '6': '6', '7': '7', '8': '8', '9': '9',
         '.': '.', '+': '+', '-': '-', '*': '*', '/': '/',
-        '%': '%', 'Enter': '=', '=': '=', 'Backspace': 'DEL',
-        'Escape': 'C', 'Delete': 'C'
+        '%': '%', 'Enter': '=', '=': '='
     };
-    const mapped = keyMap[e.key];
-    if (mapped) {
-        e.preventDefault();
-        const btn = document.querySelector(`.btn-calc[data-val="${mapped}"]`);
-        if (btn) btn.click();
+
+    if (isCalcActive) {
+        const specialMap = {
+            'Backspace': 'DEL', 'Escape': 'C', 'Delete': 'C',
+            '(': '(', ')': ')'
+        };
+        const mapped = keyMap[e.key] || specialMap[e.key];
+        if (mapped) {
+            e.preventDefault();
+            const btn = document.querySelector(`#panel-calc .btn-calc[data-val="${mapped}"]`);
+            if (btn) btn.click();
+        }
+    } else {
+        if (e.key === 'Escape') {
+            const cBtn = document.querySelector('[data-conv="C"]');
+            if (cBtn) cBtn.click();
+            return;
+        }
+        if (e.key === 'Backspace') {
+            const delBtn = document.querySelector('[data-conv="DEL"]');
+            if (delBtn) delBtn.click();
+            return;
+        }
+        if (e.key === 'Enter' || e.key === '=') {
+            const eqBtn = document.querySelector('[data-conv="="]');
+            if (eqBtn) eqBtn.click();
+            return;
+        }
+        if (!isInputFocused) {
+            const mapped = keyMap[e.key];
+            if (mapped) {
+                e.preventDefault();
+                const btn = document.querySelector(`[data-conv="${mapped}"]`);
+                if (btn) btn.click();
+            }
+        }
     }
 });
 
@@ -261,6 +413,7 @@ const convData = {
 
 let convCategory = 'time';
 let convInputVal = '';
+let lastConvResult = '0';
 
 const convInput = document.getElementById('convInput');
 const convResult = document.getElementById('convResult');
@@ -298,7 +451,7 @@ function updateTimeSubtabVisibility() {
 function convert() {
     if (isTimeCategory() && document.querySelector('.conv-subtab.active').dataset.sub === 'date') return;
     const val = parseFloat(convInput.value);
-    if (isNaN(val)) { convResult.textContent = '0'; return; }
+    if (isNaN(val)) { convResult.textContent = lastConvResult; return; }
     const data = convData[convCategory];
     const fromUnit = convFrom.value;
     const toUnit = convTo.value;
@@ -314,12 +467,17 @@ function convert() {
         else if (toUnit === 'F') res = celsius * 9 / 5 + 32;
         else res = celsius + 273.15;
 
-        convResult.textContent = parseFloat(res.toFixed(6)).toString();
+        lastConvResult = parseFloat(res.toFixed(6)).toString();
+        convResult.textContent = lastConvResult;
     } else {
         const baseVal = val * data.units[fromUnit];
         const res = baseVal / data.units[toUnit];
-        convResult.textContent = parseFloat(res.toFixed(10)).toString();
+        lastConvResult = parseFloat(res.toFixed(10)).toString();
+        convResult.textContent = lastConvResult;
     }
+    convResult.classList.remove('highlight');
+    void convResult.offsetWidth;
+    convResult.classList.add('highlight');
 }
 
 populateUnits('time');
@@ -374,7 +532,6 @@ document.querySelectorAll('[data-conv]').forEach(btn => {
         if (val === 'C') {
             convInput.value = '';
             convInputVal = '';
-            convResult.textContent = '0';
         } else if (val === 'DEL') {
             convInput.value = convInput.value.slice(0, -1);
             convert();
@@ -653,6 +810,10 @@ document.querySelectorAll('.mode-tab').forEach(tab => {
         this.classList.add('active');
         document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
         document.getElementById('panel-' + this.dataset.mode).classList.add('active');
+
+        const isCalc = this.dataset.mode === 'calc';
+        document.querySelector('.calc-brand-calc').style.display = isCalc ? 'block' : 'none';
+        document.querySelector('.calc-brand-conv').style.display = isCalc ? 'none' : 'block';
     });
 });
 
